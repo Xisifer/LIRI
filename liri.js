@@ -1,10 +1,13 @@
+// =====================================================================
+//SETUP AREA!! 
+// =====================================================================
+// Require the .env
 require("dotenv").config();
+// Require the keys.js
 var keys = require("./keys.js");
 
-// var spotify = new Spotify(keys.spotify);
-
+// Spotify Stuff
 var Spotify = require('node-spotify-api');
-
 var spotify = new Spotify ({
     id: "5bd1a29077f245da8c9aeaf51c3193d7",
     secret: "9a10abbedb8b4359adcb0988e4a2af50"
@@ -13,17 +16,24 @@ var spotify = new Spotify ({
 // Include the axios npm package (Don't forget to run "npm install axios" in this folder first!)
 var axios = require("axios");
 
+// Insert the moment.js package, for parsing the date properly.
 var moment = require("moment");
+// =====================================================================
+// =====================================================================
+
+
+// Here, we're creating all of our functions and stuff BEFORE we're calling them in the Switch-Case down below.
+
 
 //////////////////////////////////
 //////CONCERT-THIS////////////////
 //////////////////////////////////
 function concertThis() {
-    console.log("Concert function");
 
     /*
     * This will search the Bands in Town Artist Events API (`"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"`) for an artist and render the following information about each event to the terminal: */
     var artist = process.argv.slice(3).join(" ");
+
     var bandsintownQueryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=420982e1d99e34cf03729da2afe82f67";
     axios.get(bandsintownQueryUrl).then(
         function(response) {
@@ -49,11 +59,13 @@ function concertThis() {
 //////SPOTIFY-THIS-SONG///////////
 //////////////////////////////////
 function spotifyThisSong() {
-    console.log("Spotify function");
     var spotifyQuery = process.argv.slice(3).join(" ");
+    //    * If no song is provided then your program will default to "The Sign" by Ace of Base.
+    if (!spotifyQuery) { spotifyQuery = "the sign ace of base"};
+
 
     spotify
-    .search({ type: 'track', query: spotifyQuery })
+    .search({ type: 'track', query: spotifyQuery }) // Inserting our user input
     .then(function(response) {
         // * This will show the following information about the song in your terminal/bash window 
         // * Artist(s)
@@ -71,32 +83,44 @@ function spotifyThisSong() {
   console.log(err);
 });
 
-//    * If no song is provided then your program will default to "The Sign" by Ace of Base.
-    if (!spotifyQuery) { spotifyQuery = "the sign ace of base"};
+
         
 };
 
-
+//////////////////////////////////
+/////////////MOVIE-THIS///////////
+//////////////////////////////////
 function movieThis() {
-    console.log("Movie function");
+    // * You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
 
-    /* * This will output the following information to your terminal/bash window: */
+    var movieSearch = process.argv.slice(3).join(" ");
+    // * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+    if (!movieSearch) { movieSearch = "Mr. Nobody"};
 
-    //    * Title of the movie.
-    //    * Year the movie came out.
-    //    * IMDB Rating of the movie.
-    //    * Rotten Tomatoes Rating of the movie.
-    //    * Country where the movie was produced.
-    //    * Language of the movie.
-    //    * Plot of the movie.
-    //    * Actors in the movie.
 
-//    * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
 
-    //  * If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
+    axios.get("https://www.omdbapi.com/?t=" + movieSearch + "&apikey=trilogy")
+        .then(function(response) {
+            // console.log(response);
+        //    * Title of the movie.
+       console.log("Title: " + response.data.Title);
+        //    * Year the movie came out.
+       console.log("Year: " + response.data.Year);
+        //    * IMDB Rating of the movie.
+       console.log("IMDB Rating: " + response.data.imdbRating);
+        //    * Rotten Tomatoes Rating of the movie.
+       console.log("IMDB Rating: " + response.data.Ratings[1].Value);
+        //    * Country where the movie was produced.
+       console.log("Produced In: " + response.data.Country);
+        //    * Language of the movie.
+       console.log("Language: " + response.data.Language);
+        //    * Plot of the movie.
+       console.log("Plot: " + response.data.Plot);
+        //    * Actors in the movie.
+       console.log("Cast: " + response.data.Actors);
 
-    //  * It's on Netflix!​
-//    * You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
+
+    })
 };
 
 
@@ -136,4 +160,4 @@ switch(action) {
         console.log("movie-this <insert movie name here>");
         console.log("do-what-it-says");
     
-}
+};
