@@ -1,17 +1,23 @@
-console.log("HELLO, WORLD");
 require("dotenv").config();
 var keys = require("./keys.js");
 
 // var spotify = new Spotify(keys.spotify);
 
-var spotify = require('node-spotify-api');
+var Spotify = require('node-spotify-api');
+
+var spotify = new Spotify ({
+    id: "5bd1a29077f245da8c9aeaf51c3193d7",
+    secret: "9a10abbedb8b4359adcb0988e4a2af50"
+ });
 
 // Include the axios npm package (Don't forget to run "npm install axios" in this folder first!)
 var axios = require("axios");
 
 var moment = require("moment");
 
-
+//////////////////////////////////
+//////CONCERT-THIS////////////////
+//////////////////////////////////
 function concertThis() {
     console.log("Concert function");
 
@@ -38,40 +44,38 @@ function concertThis() {
      
 };
 
+
+//////////////////////////////////
+//////SPOTIFY-THIS-SONG///////////
+//////////////////////////////////
 function spotifyThisSong() {
     console.log("Spotify function");
     var spotifyQuery = process.argv.slice(3).join(" ");
 
-    /* * This will show the following information about the song in your terminal/bash window */
-    axios.get(spotifyQuery).then(
-//      * Artist(s)
-        function(response) {
-            console.log(response.data[0]);
-        }
-//      * The song's name
-
-//      * A preview link of the song from Spotify
-
-//      * The album that the song is from
-    )
-
+    spotify
+    .search({ type: 'track', query: spotifyQuery })
+    .then(function(response) {
+        // * This will show the following information about the song in your terminal/bash window 
+        // * Artist(s)
+        console.log("========================================");
+        console.log("\nArtist: " + response.tracks.items[0].artists[0].name);
+        // * The song's name
+        console.log("\nSong: " + response.tracks.items[0].name);
+        // * A preview link of the song from Spotify
+        console.log("\nPreview link: " + response.tracks.items[0].external_urls.spotify);
+        // * The album that the song is from
+        console.log("\nAlbum: " + response.tracks.items[0].album.name);
+        console.log("========================================");
+})
+.catch(function(err) {
+  console.log(err);
+});
 
 //    * If no song is provided then your program will default to "The Sign" by Ace of Base.
     if (!spotifyQuery) { spotifyQuery = "the sign ace of base"};
         
-}
-//    * You will utilize the [node-spotify-api](https://www.npmjs.com/package/node-spotify-api) package in order to retrieve song information from the Spotify API.
-
-//    * The Spotify API requires you sign up as a developer to generate the necessary credentials. You can follow these steps in order to generate a **client id** and **client secret**:
-
-//    * Step One: Visit <https://developer.spotify.com/my-applications/#!/>
-
-//    * Step Two: Either login to your existing Spotify account or create a new one (a free account is fine) and log in.
-
-//    * Step Three: Once logged in, navigate to <https://developer.spotify.com/my-applications/#!/applications/create> to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
-
-//    * Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the [node-spotify-api package](https://www.npmjs.com/package/node-spotify-api).
 };
+
 
 function movieThis() {
     console.log("Movie function");
