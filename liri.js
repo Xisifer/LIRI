@@ -6,18 +6,11 @@ require("dotenv").config();
 // Require the keys.js
 var keys = require("./keys.js");
 
-// Spotify Stuff
-var Spotify = require('node-spotify-api');
-var spotify = new Spotify ({
-    id: "5bd1a29077f245da8c9aeaf51c3193d7",
-    secret: "9a10abbedb8b4359adcb0988e4a2af50"
- });
 
 // Include the axios npm package (Don't forget to run "npm install axios" in this folder first!)
 var axios = require("axios");
 
-// Insert the moment.js package, for parsing the date properly.
-var moment = require("moment");
+
 // =====================================================================
 // =====================================================================
 
@@ -28,6 +21,11 @@ var moment = require("moment");
 //////////////////////////////////
 //////CONCERT-THIS////////////////
 //////////////////////////////////
+
+// Insert the moment.js package, for parsing the date properly.
+var moment = require("moment");
+
+
 function concertThis() {
 
     /*
@@ -58,6 +56,16 @@ function concertThis() {
 //////////////////////////////////
 //////SPOTIFY-THIS-SONG///////////
 //////////////////////////////////
+
+
+// Spotify Stuff
+var Spotify = require('node-spotify-api');
+var spotify = new Spotify ({
+    id: "5bd1a29077f245da8c9aeaf51c3193d7",
+    secret: "9a10abbedb8b4359adcb0988e4a2af50"
+ });
+
+
 function spotifyThisSong() {
     var spotifyQuery = process.argv.slice(3).join(" ");
     //    * If no song is provided then your program will default to "The Sign" by Ace of Base.
@@ -124,40 +132,77 @@ function movieThis() {
 };
 
 
+
+
+//////////////////////////////////
+////////DO-WHAT-IT-SAYS///////////
+//////////////////////////////////
+
+// fs is a core Node package for reading and writing files
+var fs = require("fs");
+
 function doWhatItSays() {
     console.log("Do This Thing function");
 
 
     //    * Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
+    fs.readFile("random.txt", "utf8", function(error, data) {
 
-    //  * It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
+        // If the code experiences any errors it will log the error to the console.
+        if (error) {
+          return console.log(error);
+        }
+      
+        // We will then print the contents of data
+        console.log(data);
+      
+        // Then split it by commas (to make it more readable)
+        var dataArr = data.split(",");
+      
+        // We will then re-display the content as an array for later use.
+        console.log(dataArr);
+
+        action = dataArr[0];
+        process.argv[3] = dataArr[1];
+        console.log(action);
+        console.log(dataArr[1]);
+        switchCaseStuff(dataArr[0]);
+
+        //  * It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
 
     //  * Edit the text in random.txt to test out the feature for movie-this and concert-this.
+      
+      });
+      
+
+
 
     
 };
 
 var action = process.argv[2];
 
-
-switch(action) {
-    case "concert-this":
-        concertThis();
-        break;
-    case "spotify-this-song":
-        spotifyThisSong();
-        break;
-    case "movie-this":
-        movieThis();
-        break;
-    case "do-what-it-says":
-        doWhatItSays();
-        break;
-    default:
-        console.log("Error, action not recognized! \nPlease enter one of the following: ");
-        console.log("concert-this <insert artist/band name here>");
-        console.log("spotify-this-song <insert song name here>");
-        console.log("movie-this <insert movie name here>");
-        console.log("do-what-it-says");
-    
+function switchCaseStuff() {
+    switch(action) {
+        case "concert-this":
+            concertThis();
+            break;
+        case "spotify-this-song":
+            spotifyThisSong();
+            break;
+        case "movie-this":
+            movieThis();
+            break;
+        case "do-what-it-says":
+            doWhatItSays();
+            break;
+        default:
+            console.log("Error, action not recognized! \nPlease enter one of the following: ");
+            console.log("concert-this <insert artist/band name here>");
+            console.log("spotify-this-song <insert song name here>");
+            console.log("movie-this <insert movie name here>");
+            console.log("do-what-it-says");
+        
+    }
 };
+switchCaseStuff();
