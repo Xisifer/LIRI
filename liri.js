@@ -35,7 +35,8 @@ function concertThis() {
     var bandsintownQueryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=420982e1d99e34cf03729da2afe82f67";
     axios.get(bandsintownQueryUrl).then(
         function(response) {
-            console.log(response.data[0]);
+            // console.log(response.data[0]);
+            console.log("========================================");
             //  * Name of the venue
             console.log("Venue name: " + response.data[0].venue.name);
             //  * Venue location
@@ -45,6 +46,7 @@ function concertThis() {
             //  * Date of the Event (use moment to format this as "MM/DD/YYYY")
             var eventdate = moment(response.data[0].datetime).format('L');
             console.log("Date: " + eventdate);
+            console.log("========================================");
         }
     );
     
@@ -65,12 +67,10 @@ var spotify = new Spotify ({
     secret: "9a10abbedb8b4359adcb0988e4a2af50"
  });
 
-
 function spotifyThisSong() {
     var spotifyQuery = process.argv.slice(3).join(" ");
     //    * If no song is provided then your program will default to "The Sign" by Ace of Base.
     if (!spotifyQuery) { spotifyQuery = "the sign ace of base"};
-
 
     spotify
     .search({ type: 'track', query: spotifyQuery }) // Inserting our user input
@@ -86,14 +86,21 @@ function spotifyThisSong() {
         // * The album that the song is from
         console.log("\nAlbum: " + response.tracks.items[0].album.name);
         console.log("========================================");
-})
-.catch(function(err) {
-  console.log(err);
-});
-
-
-        
+    })
+    .catch(function(err) {
+        console.log(err);
+    });
 };
+
+
+
+
+
+
+
+
+
+
 
 //////////////////////////////////
 /////////////MOVIE-THIS///////////
@@ -109,7 +116,7 @@ function movieThis() {
 
     axios.get("https://www.omdbapi.com/?t=" + movieSearch + "&apikey=trilogy")
         .then(function(response) {
-            // console.log(response);
+        console.log("========================================");
         //    * Title of the movie.
        console.log("Title: " + response.data.Title);
         //    * Year the movie came out.
@@ -126,7 +133,7 @@ function movieThis() {
        console.log("Plot: " + response.data.Plot);
         //    * Actors in the movie.
        console.log("Cast: " + response.data.Actors);
-
+       console.log("========================================");
 
     })
 };
@@ -142,7 +149,6 @@ function movieThis() {
 var fs = require("fs");
 
 function doWhatItSays() {
-    console.log("Do This Thing function");
 
 
     //    * Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
@@ -162,22 +168,11 @@ function doWhatItSays() {
         // We will then re-display the content as an array for later use.
         console.log(dataArr);
 
-        action = dataArr[0];
-        process.argv[3] = dataArr[1];
-        console.log(action);
-        console.log(dataArr[1]);
-        switchCaseStuff(dataArr[0]);
-
-        //  * It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
-
-    //  * Edit the text in random.txt to test out the feature for movie-this and concert-this.
+        action = dataArr[0]; //Setting the first part of the dataArr array as equal to the user's Action input, which the SwitchCaseStuff function hooks into.
+        process.argv[3] = dataArr[1]; //Setting the second part of the dataArr array as equal to the user's input, which all the other functions hook into.
+        switchCaseStuff(action);
       
       });
-      
-
-
-
-    
 };
 
 var action = process.argv[2];
